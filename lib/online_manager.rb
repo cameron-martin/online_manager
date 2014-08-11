@@ -9,6 +9,10 @@ class OnlineManager
     new(*args, &block).run
   end
 
+  def self.setup(*args, &block)
+    new(*args, &block).setup
+  end
+
   def initialize
     @timeout = nil
     @online_users = {}
@@ -22,9 +26,11 @@ class OnlineManager
   end
 
   def run
-    EM.run do
-      @setup_callback.call(method(:seen))
-    end
+    EM.run { setup }
+  end
+
+  def setup
+    @setup_callback.call(method(:seen))
   end
 
 private

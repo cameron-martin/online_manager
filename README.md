@@ -53,6 +53,17 @@ OnlineManager.run do |c|
 end
 ```
 
+If you already are in the context of an eventmachine reactor, or you want to run multiple of these in the same thread,
+you can use `.setup`.
+
+```ruby
+EM.run do
+  OnlineManager.setup do |c|
+    # Configure it
+  end
+end
+```
+
 ## TODO
 
 * Write tests for this. Its pretty simple (~ 50 lines of code excluding the DSL) and I have it running in production, so it should be fine.
