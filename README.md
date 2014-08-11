@@ -33,7 +33,8 @@ require 'online_manager'
 # This runs an eventmachine reactor, so the call to .run blocks.
 OnlineManager.run do |c|
 
-  c.timeout 5 # How long since a heartbeat was last received until the user is considered offline? (in seconds)
+  # How long since a heartbeat was last received until the user is considered offline? (in seconds)
+  c.timeout 5
 
   # All the blocks below will be called inside an eventmachine reactor.
 
