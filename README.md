@@ -72,6 +72,8 @@ end
 
 * Write tests for this. Its pretty simple (~ 50 lines of code excluding the DSL) and I have it running in production, so it should be fine.
   Check out [this][1] for testing eventmachine.
+* Consider setting remaining users offline in an ensure block, so it always leaves the statuses in a consistent state.
+  [Could this replace setting users offline on initialization?][2]
 
 ## Contributing
 
@@ -83,3 +85,4 @@ end
 
 
 [1]: https://github.com/jcoglan/rspec-eventmachine
+[2]: http://stackoverflow.com/questions/25235089/when-will-rubys-ensure-not-run
