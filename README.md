@@ -27,6 +27,9 @@ Or install it yourself as:
 ```ruby
 require 'online_manager'
 
+# You should set all the users offline when it first runs,
+# since otherwise you'll be left with users marked online from when it last quit.
+
 # This runs an eventmachine reactor, so the call to .run blocks.
 OnlineManager.run do |c|
 
