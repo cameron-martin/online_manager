@@ -1,7 +1,8 @@
 require 'eventmachine'
 
-class OnlineManager
+require 'online_manager/dsl'
 
+class OnlineManager
   attr_writer :online_callback, :offline_callback, :setup_callback, :timeout
 
   def self.run(*args, &block)
@@ -15,7 +16,7 @@ class OnlineManager
     @offline_callback = -> (_) {  }
     @setup_callback = ->(_) { raise 'You must specify a setup callback' }
 
-    yield CallbackDSL.new(self) if block_given?
+    yield DSL.new(self) if block_given?
 
     raise 'Timeout must be specified' unless @timeout
   end
@@ -26,7 +27,7 @@ class OnlineManager
     end
   end
 
-  private
+private
 
   def seen(id)
     @online_callback.call(id) unless online?(id)
@@ -49,27 +50,4 @@ class OnlineManager
   def online?(id)
     @online_users.has_key?(id)
   end
-
-  class CallbackDSL
-    def initialize(target)
-      @target = target
-    end
-
-    def timeout(timeout)
-      @target.timeout = timeout
-    end
-
-    def online(&block)
-      @target.online_callback = block
-    end
-
-    def offline(&block)
-      @target.offline_callback = block
-    end
-
-    def setup(&block)
-      @target.setup_callback = block
-    end
-  end
-
 end
