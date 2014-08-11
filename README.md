@@ -47,7 +47,7 @@ OnlineManager.run do |c|
   c.online do |user_id|
     puts "Booster #{user_id} online"
     # Update the user to online in the database or whatever
-    # This must be asynchronous i/o, otherwise it will block the reactor.
+    # This must use asynchronous i/o, otherwise it will block the reactor.
   end
 
   c.offline do |user_id|
