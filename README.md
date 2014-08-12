@@ -30,31 +30,35 @@ require 'online_manager'
 # You should set all the users offline when it first runs,
 # since otherwise you'll be left with users marked online from when it last quit.
 
-# This runs an eventmachine reactor, so the call to .run blocks.
-OnlineManager.run do |c|
+class OnlineConfig
 
   # How long since a heartbeat was last received until the user is considered offline? (in seconds)
-  c.timeout 5
+  def timeout
+    5
+  end
 
   # All the blocks below will be called inside an eventmachine reactor.
 
-  c.setup do |seen|
+  def setup
     # Set up any websocket server/connection to pubsub server, etc
     # This must use eventmachine, otherwise it will block the reactor.
-    # Then call seen.call(user_id) whenever you receive a heartbeat from a user.
+    # Then yield(user_id) whenever you receive a heartbeat from a user.
   end
 
-  c.online do |user_id|
+  def online(user_id)
     puts "Booster #{user_id} online"
     # Update the user to online in the database or whatever
     # This must use asynchronous i/o, otherwise it will block the reactor.
   end
 
-  c.offline do |user_id|
+  def offline(user_id)
     puts "Booster #{user_id} offline"
     # Called when a user transitions from online -> offline
   end
 end
+
+# This runs an eventmachine reactor, so the call to .run blocks.
+OnlineManager.run(OnlineConfig.new)
 ```
 
 If you already are in the context of an eventmachine reactor, or you want to run multiple of these in the same thread,
@@ -62,15 +66,13 @@ you can use `.setup`.
 
 ```ruby
 EM.run do
-  OnlineManager.setup do |c|
-    # Configure it
-  end
+  OnlineManager.setup(OnlineConfig.new)
 end
 ```
 
 ## TODO
 
-* Write tests for this. Its pretty simple (~ 50 lines of code excluding the DSL) and I have it running in production, so it should be fine.
+* Write tests for this. Its pretty simple (~ 50 lines of code) and I have it running in production, so it should be fine.
   Check out [this][1] for testing eventmachine.
 * Consider setting remaining users offline in an ensure block, so it always leaves the statuses in a consistent state.
   [Could this replace setting users offline on initialization?][2]
